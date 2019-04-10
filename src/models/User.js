@@ -43,18 +43,6 @@ const User = mongoose.model('User', {
     }
 });
 
-//Create an instance or field.
-const user = new User({
-    name: 'Arjun',
-    email: 'arjun@gmail.com',
-    password: '   mvnrinrnr123 '
-});
 
-//save rajan into the database.
-user.save().then((inserted) => {
-    console.log(inserted)
-}).catch((error) => {
-    console.log("Error", error);
-})
 
 module.exports = User;
