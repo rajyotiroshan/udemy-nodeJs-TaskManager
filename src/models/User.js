@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-//Create a User Model.
-
-const User = mongoose.model('User', {
+//Schema for User collection.
+const userSchema = new mongoose.Schema( {
     name: {
         type: String,
         required: true,
@@ -42,6 +42,20 @@ const User = mongoose.model('User', {
         }
     }
 });
+//set the midlleware up.
+userSchema.pre('save', async function(next){//need to be std function not arrow.
+    //this refs to the doc being save.
+    const user = this;
+
+    if(user.isModified('password')) {//password field is modified.
+        user.password = await bcrypt.hash(user.password,8);
+    }
+    console.log('just before saving');
+    next();
+})
+
+//Create a User Model
+const User = mongoose.model('User',userSchema);
 
 
 
