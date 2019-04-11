@@ -14,7 +14,7 @@ const Task = require('../src/models/Task');
 }]); */
 
 //remove task with given id.
-Task.findByIdAndDelete('5cadf4ffce7e1b0a280dc57a').then((task)=>{
+/* Task.findByIdAndDelete('5cadf4ffce7e1b0a280dc579').then((task)=>{
     console.log(task);
     return  Task.countDocuments({completed: false});
 }).then((res)=>{
@@ -22,3 +22,14 @@ Task.findByIdAndDelete('5cadf4ffce7e1b0a280dc57a').then((task)=>{
 }).catch((e)=>{
     console.log(e);
 })
+ */
+//chalenges.
+
+const deleteTaskAndCount = async (id)=>{
+    await Task.findByIdAndDelete(id);
+    const count = await Task.countDocuments({completed: true});
+    return count;
+}
+deleteTaskAndCount('5cacad10b5110213ac02078b').then((count)=>{
+    console.log(count);
+}) ;
