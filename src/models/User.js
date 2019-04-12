@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 //Schema for User collection.
 const userSchema = new mongoose.Schema( {
@@ -41,7 +42,13 @@ const userSchema = new mongoose.Schema( {
                 throw new Error('password must not include password');
             }
         }
-    }
+    },
+    tokens:[{
+        token:{
+            type: String,
+            required: true
+        }
+    }]
 });
 
 
@@ -60,6 +67,17 @@ userSchema.statics.findByCredentials = async (email, password)=> {
     }
 
     return user;
+}
+
+//generate jwt token
+
+userSchema.methods.generateAuthToken = async function(){
+    const user = this;//ref to current user.
+    const token = jwt.sign({_id: user._id.toString()},'thisismynewcourse' )
+    //add token to tokens.
+    user.tokens = user.tokens.concat({token});
+    await user.save();
+    return token;
 }
 
 //hash the plain text password before saving.
