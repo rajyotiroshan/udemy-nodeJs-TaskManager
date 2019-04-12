@@ -21,6 +21,18 @@ router.post('/users', async (req, res)=> {
     
 })
 
+
+//sign up router.
+
+router.post('/users/login', async (req, res)=>{
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password);
+        res.send(user);
+    }catch(e){
+        res.status(400).send();
+    }
+});
+
 //hand;er for user data request
 router.get('/users', async (req, res)=>{
 
