@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema( {
             }
         }
     },
-    tokens:[{
+    tokens/*array of object*/:[{/* always with single field token and required*/
         token:{
             type: String,
             required: true
@@ -76,6 +76,7 @@ userSchema.methods.generateAuthToken = async function(){
     const token = jwt.sign({_id: user._id.toString()},'thisismynewcourse' )
     //add token to tokens.
     user.tokens = user.tokens.concat({token});
+    //save user to the db.
     await user.save();
     return token;
 }
