@@ -35,7 +35,7 @@ router.post('/users/login', async (req, res)=>{
     }
 });
 
-//hand;er for user data request
+//handle for user data request
 router.get('/users', async (req, res)=>{
 
     try {
@@ -52,6 +52,7 @@ router.get('/users', async (req, res)=>{
     }); */
 });
 
+//route for get req for user with id.
 router.get('/users/?:id', async (req,res)=>{
     //req.params object has single property as id.
     const _id = req.params.id;//access id from url.
@@ -76,7 +77,6 @@ router.get('/users/?:id', async (req,res)=>{
 })
 
 //delete a user of given id
-
 router.delete('/users/:id', async (req, res)=>{
     try {
         const user = await User.findByIdAndDelete(req.params.id);
