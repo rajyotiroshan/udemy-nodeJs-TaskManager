@@ -6,6 +6,24 @@ const taskRouter = require('./routers/task');
 const app = express();
 const port = process.env.PORT || 3000;
 
+//middlewares.
+/* app.use((req,res,next)=>{
+    //console.log(req.method,req.path);
+    //call next in chain.
+    if(req.method === 'GET'){
+        res.send('GET ')
+    }else {
+        next();//handle next route handler.//done with middleware.
+    }
+   
+}); */
+
+//Challenge
+/***middleware for maintenance mode. */
+/* app.use((req,res,next)=>{
+    res.status(503).send('Site is under maintenance.')
+}); */
+
 // router.
 app.use(express.json());//parse incoming json to an object 
 app.use(userRouter);

@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/User')
-
+const authMiddleware = require('../middlewares/authMiddleware');
 const router = new express.Router();
 
 //listen for user creation request.
@@ -38,8 +38,7 @@ router.post('/users/login', async (req, res)=>{
 });
 
 //handle for user data request
-router.get('/users', async (req, res)=>{
-
+router.get('/users', authMiddleware/*middleware*/,async (req, res)=>{//only runs when middleware calls the next function.
     try {
         const users = await User.find({});
         res.send(users);
