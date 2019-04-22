@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const router = new express.Router();
 
 //listen for user creation request.
-router.post('/users', async (req, res)=> {
+router.post('/users',async (req, res)=> {
     const user = new User(req.body);
     /*     user.save().then(()=>{
         res.status(201).send(user);
@@ -80,13 +80,10 @@ router.get('/users/me', authMiddleware/*middleware*/,async (req, res)=>{//only r
 
 
 //delete a user of given id
-router.delete('/users/:id', async (req, res)=>{
+router.delete('/users/me', authMiddleware ,async (req, res)=>{
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if(!user) {
-            return res.status(404).send();
-        }
-        res.send(user)
+        await req.user.remove();
+        res.send(req.user)
     }catch(e){
         res.status(500).send();
     }
@@ -94,7 +91,7 @@ router.delete('/users/:id', async (req, res)=>{
 
 //patch: to update an existing request. (for user).
 
-router.patch('/users/:id', async (req, res)=>{
+router.patch('/users/me',authMiddleware, async (req, res)=>{
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'password', 'age'];
     const isValidUpdateRequest = updates.every(update=> allowedUpdates.includes(update));
@@ -104,14 +101,10 @@ router.patch('/users/:id', async (req, res)=>{
     }
 
     try {
-        const user = await User.findById(req.params.id);
-        updates.forEach(update=> user[update] =req.body[update]);
-        await user.save();
+        updates.forEach(update=> req.user[update] =req.body[update]);
+        await req.user.save();
         //const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators:true});
-        if(!user) {
-            return res.status(404).send();
-        }
-        res.send(user);
+        res.send(req.user);
     }catch(e){
         res.status(400).send(e);
     }
