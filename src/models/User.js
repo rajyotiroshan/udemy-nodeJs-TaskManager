@@ -51,6 +51,18 @@ const userSchema = new mongoose.Schema( {
     }]
 });
 
+//before sending user as a response 
+//res.send()=>user.toStringify()=>user.toJSON()=> and then send
+//the user back as a json response.
+//hence no  need to call toJSON explicitely 
+//but below method get called before sending res. 
+userSchema.methods.toJSON = function(){
+    const user = this;
+    const userObject  = user.toObject();
+    delete userObject.password;
+    delete userObject.tokens;
+    return userObject;
+}
 
 //
 userSchema.statics.findByCredentials = async (email, password)=> {
