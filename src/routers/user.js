@@ -37,14 +37,39 @@ router.post('/users/login', async (req, res)=>{
     }
 });
 
-//handle for user data request
-router.get('/users', authMiddleware/*middleware*/,async (req, res)=>{//only runs when middleware calls the next function.
+router.post('/users/logout', authMiddleware , async (req, res)=>{
     try {
+        req.user.tokens = req.user.tokens.filter((token)=>{
+            return token.token !== req.token;
+        });
+        await req.user.save();
+        res.send();
+    }catch(e){
+        res.status(500).send();
+    }
+});
+
+router.post('/users/logoutAll', authMiddleware, async (req, res)=>{
+   
+    try{
+            req.user.tokens = [];
+            await req.user.save();
+    }catch(e){
+        res.status(500).send();
+    }
+})
+
+//handle for user data request
+router.get('/users/me', authMiddleware/*middleware*/,async (req, res)=>{//only runs when middleware calls the next function.
+    res.send(req.user);
+
+
+    /*     try {
         const users = await User.find({});
         res.send(users);
     }catch(e) {
         res.status(500).send(e);
-    }
+    } */
 
 /*     User.find({}).then((users)=>{
         res.send(users);
@@ -53,29 +78,6 @@ router.get('/users', authMiddleware/*middleware*/,async (req, res)=>{//only runs
     }); */
 });
 
-//route for get req for user with id.
-router.get('/users/?:id', async (req,res)=>{
-    //req.params object has single property as id.
-    const _id = req.params.id;//access id from url.
-    try {
-        const user = User.findById(_id);
-        if(!user){
-            return res.status(404).send();
-        }
-        res.send(user);
-    }catch(e){
-        res.status(500).send();
-    }
-/*     User.findById(_id).then((user)=>{
-        if(!user) {
-            return res.status(404).send();
-        }
-
-        res.send(user);
-    }).catch((e)=>{
-        res.status(500).send();
-    }); */
-})
 
 //delete a user of given id
 router.delete('/users/:id', async (req, res)=>{
