@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema( {
             }
         }
     },
-    tokens/*array of object*/:[{/* always with single field token and required*/
+    tokens:[{/*array of object*//* always with single field token and required*/
         token:{
             type: String,
             required: true
@@ -64,7 +64,8 @@ userSchema.methods.toJSON = function(){
     return userObject;
 }
 
-//
+//find a user from usermodel using email and password.
+// and return the user if found else log an error
 userSchema.statics.findByCredentials = async (email, password)=> {
     const user = await User.findOne({email});
 
@@ -102,7 +103,7 @@ userSchema.pre('save', async function(next){//need to be std function not arrow.
     if(user.isModified('password')) {//password field is modified.
         user.password = await bcrypt.hash(user.password,8);
     }
-    console.log('just before saving');
+    //console.log('just before saving');
     next();
 })
 
