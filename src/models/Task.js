@@ -10,6 +10,10 @@ const Task = mongoose.model('Task', {
     completed: {
         type: Boolean,
         completed: true
+    },
+    owner:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
     }
 });
 
