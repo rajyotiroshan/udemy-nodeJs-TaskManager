@@ -64,6 +64,17 @@ userSchema.methods.toJSON = function(){
     return userObject;
 }
 
+
+/**
+ * 
+ */
+/* userSchema.methods.getPublicProfile = function() {
+    const user = this;
+    const userObject=user.toObject();
+    delete userObject.password
+    delete userObject.tokens
+    return userObject;
+}  */
 //find a user from usermodel using email and password.
 // and return the user if found else log an error
 userSchema.statics.findByCredentials = async (email, password)=> {

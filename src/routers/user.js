@@ -6,12 +6,6 @@ const router = new express.Router();
 //listen for user creation request.
 router.post('/users',async (req, res)=> {
     const user = new User(req.body);
-    /*     user.save().then(()=>{
-        res.status(201).send(user);
-    }).catch((error)=>{
-        res.status(400);
-        res.send(error);
-    }); */
     try {
       await user.save();
       //generate tokens.
@@ -62,20 +56,6 @@ router.post('/users/logoutAll', authMiddleware, async (req, res)=>{
 //handle for user data request
 router.get('/users/me', authMiddleware/*middleware*/,async (req, res)=>{//only runs when middleware calls the next function.
     res.send(req.user);
-
-
-    /*     try {
-        const users = await User.find({});
-        res.send(users);
-    }catch(e) {
-        res.status(500).send(e);
-    } */
-
-/*     User.find({}).then((users)=>{
-        res.send(users);
-    }).catch((error)=>{
-        res.status(500).send();
-    }); */
 });
 
 
