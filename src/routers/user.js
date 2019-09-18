@@ -2,6 +2,12 @@ const express = require('express');
 const User = require('../models/User')
 const authMiddleware = require('../middlewares/authMiddleware');
 const router = new express.Router();
+const multer = require('multer');
+
+//configure multer
+let upload = multer({
+    dest:'avatars'
+})
 
 //listen for user creation request.
 router.post('/users',async (req, res)=> {
@@ -89,5 +95,14 @@ router.patch('/users/me',authMiddleware, async (req, res)=>{
         res.status(400).send(e);
     }
 })
+
+/**
+ * @routes POST /users/me/avatar
+ * @description let user upload profile picture
+ */
+
+ router.post('/users/me/avatar',upload.single('avatar'), (req, res)=>{
+     res.status(200).send('upoaded');
+ })
 
 module.exports = router;
