@@ -23,7 +23,7 @@ router.post('/tasks', authMiddleware, async  (req, res)=> {
 });
 
 /**
- * @routes /tasks
+ * @routes GET /tasks?completed=false/true
  * @description returns all tasks for a user
  * @access private
  * 
@@ -31,7 +31,14 @@ router.post('/tasks', authMiddleware, async  (req, res)=> {
 router.get('/tasks', authMiddleware,async (req,res)=>{
     try {
         //const tasks = await Task.find({owner: req.user._id});
-        await req.user.populate('tasks').execPopulate();
+        const match  = {};
+        if(req.query.completed){
+            match.completed = req.query.completed === 'true';
+        }
+        await req.user.populate({
+            path: 'tasks',
+            match
+        }).execPopulate();
         res.send(req.user.tasks);
     }catch(e){
         res.send(e);
