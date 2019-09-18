@@ -25,6 +25,7 @@ router.post('/tasks', authMiddleware, async  (req, res)=> {
 /**
  * @routes GET /tasks?completed=false/true
  * @routes GET /task?limit=<num>&skip=<num>
+ * @routes GET /tasks?sortBy=<createdAt/>_asc or _dsc
  * @description returns all tasks for a user
  * @access private
  * 
@@ -33,15 +34,22 @@ router.get('/tasks', authMiddleware,async (req,res)=>{
     try {
         //const tasks = await Task.find({owner: req.user._id});
         const match  = {};
+        const sort = {};
         if(req.query.completed){
             match.completed = req.query.completed === 'true';
+        }
+
+        if(req.query.sortBy) {
+            const parts = req.query.sortBy.split(':');
+            sort[parts[0]] = parts[1] === 'desc' ? -1: 1;
         }
         await req.user.populate({
             path: 'tasks',
             match,
             options: {
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort
             }
         }).execPopulate();
         res.send(req.user.tasks);
