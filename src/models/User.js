@@ -51,6 +51,17 @@ const userSchema = new mongoose.Schema( {
     }]
 });
 
+
+//virtual data/attribute
+//relationship betweeen two entities.
+//not actual data stored in the collection database
+//<name for virtula field>
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 //before sending user as a response 
 //res.send()=>user.toStringify()=>user.toJSON()=> and then send
 //the user back as a json response.
