@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Task  = require('./Task');
 
 //Schema for User collection.
 const userSchema = new mongoose.Schema( {
@@ -129,6 +130,13 @@ userSchema.pre('save', async function(next){//need to be std function not arrow.
     next();
 })
 
+//Delete user task when user is removed
+userSchema.pre('remove', async function(next){
+    const user = this;
+    await Task.deleteMany({ owner: user._id});
+    next();
+
+})
 //Create a User Model
 const User = mongoose.model('User',userSchema);
 
