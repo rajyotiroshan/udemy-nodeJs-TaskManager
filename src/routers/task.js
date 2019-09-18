@@ -24,6 +24,7 @@ router.post('/tasks', authMiddleware, async  (req, res)=> {
 
 /**
  * @routes GET /tasks?completed=false/true
+ * @routes GET /task?limit=<num>&skip=<num>
  * @description returns all tasks for a user
  * @access private
  * 
@@ -37,7 +38,11 @@ router.get('/tasks', authMiddleware,async (req,res)=>{
         }
         await req.user.populate({
             path: 'tasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+            }
         }).execPopulate();
         res.send(req.user.tasks);
     }catch(e){
