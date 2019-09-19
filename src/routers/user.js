@@ -115,6 +115,8 @@ let upload = multer({
 })
  router.post('/users/me/avatar',upload.single('avatar'), (req, res)=>{
      res.status(200).send({"msg":"successfully uploaded"});
+ }, (error, req, res, next)=>{
+     res.status(401).send({error: error.message});
  })
 
 module.exports = router;
