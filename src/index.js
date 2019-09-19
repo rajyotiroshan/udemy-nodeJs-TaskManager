@@ -33,8 +33,13 @@ upload = multer({
         cb(undefined, false); */
     }
 })
-app.post('/upload', upload.single('upload'), (req, res)=>{
+
+//multer error middleware
+app.post('/upload', upload.single('upload'),(req, res)=>{
     res.send({"msg": "uploaded"});
+}, (error, req, res, next)=>{
+    //calls when there is an error occured in previous middleware handler.
+    res.status(400).send({error: error.message});
 })
 
 // router.
