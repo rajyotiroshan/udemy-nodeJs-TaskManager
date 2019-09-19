@@ -96,11 +96,11 @@ router.patch('/users/me',authMiddleware, async (req, res)=>{
 /**
  * @routes POST /users/me/avatar
  * @description let user upload profile picture
+ * @access Private
  */
 
  //configure multer
 let upload = multer({
-    dest:'avatars',
     limits: {
         fileSize: 1000000
     },
@@ -113,10 +113,29 @@ let upload = multer({
         cb(undefined, true);
     }
 })
- router.post('/users/me/avatar',upload.single('avatar'), (req, res)=>{
-     res.status(200).send({"msg":"successfully uploaded"});
+ router.post('/users/me/avatar',authMiddleware, upload.single('avatar'), async (req, res)=>{
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
+    res.status(200).send({"msg":"successfully uploaded"});
  }, (error, req, res, next)=>{
      res.status(401).send({error: error.message});
  })
+
+ /**
+  * @routes DELETE /users/me/avatar
+  * @descripiton DELETE profile pics
+  * @access Private
+  */
+
+  router.delete('/users/me/avatar', authMiddleware, async(req, res)=>{
+    try {
+        req.user.avatar = undefined;
+        await req.user.save();
+    } catch (error) {
+        res.status(401).send({msg:"error in deleting"});
+    }  
+    res.status(200).send({msg:"deleted"});
+    
+  })
 
 module.exports = router;
