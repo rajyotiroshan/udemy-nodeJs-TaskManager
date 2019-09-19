@@ -4,10 +4,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const router = new express.Router();
 const multer = require('multer');
 
-//configure multer
-let upload = multer({
-    dest:'avatars'
-})
+
 
 //listen for user creation request.
 router.post('/users',async (req, res)=> {
@@ -101,8 +98,23 @@ router.patch('/users/me',authMiddleware, async (req, res)=>{
  * @description let user upload profile picture
  */
 
+ //configure multer
+let upload = multer({
+    dest:'avatars',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb){
+        //validate file type
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            cb(new Error('Upload a .jpg or .jpeg file '));
+        }
+        //successfully uploaded
+        cb(undefined, true);
+    }
+})
  router.post('/users/me/avatar',upload.single('avatar'), (req, res)=>{
-     res.status(200).send('upoaded');
+     res.status(200).send({"msg":"successfully uploaded"});
  })
 
 module.exports = router;
