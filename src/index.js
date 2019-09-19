@@ -6,42 +6,6 @@ const taskRouter = require('./routers/task');
 const app = express();
 const port = process.env.PORT || 3000;
 
-
-const multer = require('multer');
-
-//config to upload
-upload = multer({
-    dest: 'images',
-    limits:{
-        fileSize: 1000000
-    },
-    fileFilter(req, file, cb){
-        //name of the file upload
-        //to find out the extension
-        if (!file.originalname.match(/\.(doc|docx)$/)) {
-          return cb(new Error('Please upload a word document(.doc or docx)'));
-        }
-
-        cb(undefined, true);
-
-        
-/*         //error
-        cb(new Error('File must be pdf'))
-        //successfully uploaded
-        cb(undefined, true);
-        //reject the upload
-        cb(undefined, false); */
-    }
-})
-
-//multer error middleware
-app.post('/upload', upload.single('upload'),(req, res)=>{
-    res.send({"msg": "uploaded"});
-}, (error, req, res, next)=>{
-    //calls when there is an error occured in previous middleware handler.
-    res.status(400).send({error: error.message});
-})
-
 // router.
 app.use(express.json());//parse incoming req as a json and store it in req.body field
 app.use(userRouter);
